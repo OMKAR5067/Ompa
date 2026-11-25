@@ -180,3 +180,39 @@ body { width: 100%; min-height: 100vh; overflow-x: hidden; background: #080808; 
         scroll-behavior: auto !important;
     }
 }
+
+
+/* =========================================
+   EXTRAS: CURSOR, PROGRESS, CANVAS, TAPE
+========================================= */
+#net { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 10000; background: linear-gradient(90deg, var(--orange), var(--yellow)); box-shadow: 0 0 12px var(--orange); }
+
+.cursor { position: fixed; left: 0; top: 0; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1.5px solid var(--orange); border-radius: 50%; z-index: 10000; pointer-events: none; opacity: 0; box-shadow: 0 0 15px rgba(255,122,0,.4); transition: opacity .3s; }
+@media (hover: hover) and (pointer: fine) { body, a { cursor: none; } .cursor { opacity: 1; } }
+
+/* letters */
+.word { display: inline-block; white-space: nowrap; }
+.ch { display: inline-block; will-change: transform; }
+.title-line.accent { background: linear-gradient(100deg, var(--orange), var(--yellow), var(--orange)); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none; animation: sheen 5s linear infinite; }
+@keyframes sheen { to { background-position: -200% 0; } }
+
+/* countdown boxes get a glass look + moving shine */
+.time-box { position: relative; padding: 14px 16px; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; background: rgba(255,255,255,.03); backdrop-filter: blur(10px); overflow: hidden; transition: border-color .3s, transform .3s; }
+.time-box:hover { border-color: rgba(255,122,0,.5); transform: translateY(-4px); }
+.time-box::after { content: ""; position: absolute; inset: 0; background: linear-gradient(120deg, transparent 35%, rgba(255,160,40,.18), transparent 65%); transform: translateX(-120%); animation: shine 5s infinite; }
+.time-box:nth-of-type(2)::after { animation-delay: .4s; }
+.time-box:nth-of-type(3)::after { animation-delay: .8s; }
+.time-box:nth-of-type(4)::after { animation-delay: 1.2s; }
+@keyframes shine { 50%, 100% { transform: translateX(120%); } }
+
+/* construction tape */
+.tape { margin: 30px -5vw 25px; overflow: hidden; transform: rotate(-1.2deg); background: var(--yellow); border-block: 3px solid #111; box-shadow: 0 10px 35px rgba(255,122,0,.25); }
+.tape-track { display: flex; width: max-content; animation: slide 22s linear infinite; }
+.tape-track span { font-family: "Bebas Neue", sans-serif; font-size: 26px; letter-spacing: 4px; color: #111; padding: 8px 26px; white-space: nowrap; display: flex; align-items: center; gap: 52px; }
+.tape-track span::after { content: "⚠"; font-size: .8em; }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+.warning-sign { will-change: transform; }
+.floating-icon { cursor: default; }
