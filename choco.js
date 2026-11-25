@@ -328,7 +328,7 @@ gsap.to(".character-glow", {
 ========================================= */
 
 // December 3, 2026 at midnight
-const targetDate = new Date("December 30, 2026 00:00:00").getTime();
+const targetDate = new Date("January 24, 2027 00:00:00").getTime();
 
 
 function updateCountdown() {
@@ -355,34 +355,27 @@ function updateCountdown() {
 
     }
 
-
     const days = Math.floor(
         difference / (1000 * 60 * 60 * 24)
     );
-
 
     const hours = Math.floor(
         (difference / (1000 * 60 * 60)) % 24
     );
 
-
     const minutes = Math.floor(
         (difference / (1000 * 60)) % 60
     );
-
 
     const seconds = Math.floor(
         (difference / 1000) % 60
     );
 
-
     document.getElementById("days").textContent =
         String(days).padStart(2, "0");
 
-
     document.getElementById("hours").textContent =
         String(hours).padStart(2, "0");
-
 
     document.getElementById("minutes").textContent =
         String(minutes).padStart(2, "0");
