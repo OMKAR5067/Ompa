@@ -21,6 +21,7 @@ gsap.timeline({ delay: 2.6 })
     .from(".countdown-wrapper", { y: 20, opacity: 0, duration: .6 })
     .from(".launch-date", { opacity: 0, duration: .5 })
     .from(".character-area", { x: 100, opacity: 0, duration: 1.2, ease: "power4.out" }, "-=1")
+    .from(".tape", { xPercent: -30, opacity: 0, duration: .9, ease: "power3.out" })
     .from(".footer", { y: 20, opacity: 0, duration: .6 });
 
 
@@ -202,3 +203,191 @@ document.addEventListener("visibilitychange", () => {
         gsap.globalTimeline.resume();
     }
 });
+
+
+
+/* =========================================
+   SPLIT TITLE INTO LETTERS
+========================================= */
+
+document.querySelectorAll(".title-line").forEach(line => {
+
+    const text = line.textContent.trim();
+
+    line.textContent = "";
+
+    text.split(" ").forEach((word, i, arr) => {
+
+        const w = document.createElement("span");
+        w.className = "word";
+
+        [...word].forEach(letter => {
+            const c = document.createElement("span");
+            c.className = "ch";
+            c.textContent = letter;
+            w.appendChild(c);
+        });
+
+        line.appendChild(w);
+
+        if (i < arr.length - 1) line.appendChild(document.createTextNode(" "));
+    });
+});
+
+// Letter pop-up when the hero title enters
+gsap.from(".title-line .ch", {
+
+    yPercent: 110,
+    rotate: 10,
+    opacity: 0,
+    duration: 1,
+    stagger: .03,
+    delay: 3.2,
+    ease: "power4.out"
+});
+
+// Letters hop when hovered
+document.querySelectorAll(".ch").forEach(ch => {
+
+    ch.addEventListener("mouseenter", () => {
+
+        gsap.fromTo(ch, { y: 0 }, {
+            y: -16, duration: .2, yoyo: true, repeat: 1,
+            ease: "power2.out", overwrite: true
+        });
+    });
+});
+
+
+/* =========================================
+   CONSTELLATION CANVAS (orange network)
+========================================= */
+
+const net = document.getElementById("net");
+const ctx = net.getContext("2d");
+
+let W, H, dots = [];
+const mouse = { x: -999, y: -999 };
+
+function resizeNet() {
+
+    const ratio = window.devicePixelRatio || 1;
+
+    W = window.innerWidth;
+    H = window.innerHeight;
+
+    net.width = W * ratio;
+    net.height = H * ratio;
+
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+    dots = Array.from({ length: Math.min(75, Math.floor(W / 16)) }, () => ({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - .5) * .35,
+        vy: (Math.random() - .5) * .35
+    }));
+}
+
+window.addEventListener("resize", resizeNet);
+resizeNet();
+
+function drawNet() {
+
+    ctx.clearRect(0, 0, W, H);
+
+    dots.forEach((p, i) => {
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const d = Math.hypot(dx, dy);
+
+        if (d < 140) {
+            p.x += dx / d * 1.6;
+            p.y += dy / d * 1.6;
+        }
+
+        ctx.fillStyle = "rgba(255,122,0,.65)";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        for (let j = i + 1; j < dots.length; j++) {
+
+            const q = dots[j];
+            const l = Math.hypot(p.x - q.x, p.y - q.y);
+
+            if (l < 120) {
+                ctx.strokeStyle = `rgba(255,140,30,${.2 * (1 - l / 120)})`;
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(q.x, q.y);
+                ctx.stroke();
+            }
+        }
+    });
+
+    requestAnimationFrame(drawNet);
+}
+
+if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) drawNet();
+
+
+/* =========================================
+   CURSOR + WARNING SIGN PARALLAX
+========================================= */
+
+const cursor = document.querySelector(".cursor");
+
+window.addEventListener("mousemove", (e) => {
+
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+
+    gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: .25, ease: "power3.out" });
+
+    if (window.innerWidth > 768) {
+
+        const x = (e.clientX / window.innerWidth - .5) * 2;
+
+        gsap.to(".warning-sign", {
+            x: x * 20, rotationY: x * 8,
+            duration: 1, ease: "power2.out", overwrite: "auto"
+        });
+    }
+});
+
+document.querySelectorAll("a, .message, .time-box").forEach(el => {
+
+    el.addEventListener("mouseenter", () => gsap.to(cursor, { scale: 1.8, duration: .3 }));
+    el.addEventListener("mouseleave", () => gsap.to(cursor, { scale: 1, duration: .3 }));
+});
+
+
+/* =========================================
+   SCROLL PROGRESS BAR
+========================================= */
+
+const bar = document.querySelector(".progress");
+
+window.addEventListener("scroll", () => {
+
+    const max = document.documentElement.scrollHeight - window.innerHeight || 1;
+
+    bar.style.width = (window.scrollY / max * 100) + "%";
+});
+
+
+/* =========================================
+   TAPE: duplicate content for a seamless loop
+========================================= */
+
+const tapeTrack = document.querySelector(".tape-track");
+
+tapeTrack.innerHTML += tapeTrack.innerHTML;
