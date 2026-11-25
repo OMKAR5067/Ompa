@@ -209,44 +209,6 @@ gsap.to(".helmet", {
 
 
 /* =========================================
-   LEFT ARM
-========================================= */
-
-gsap.to(".arm-left", {
-
-    rotation: 25,
-
-    duration: 1.5,
-
-    ease: "sine.inOut",
-
-    repeat: -1,
-
-    yoyo: true
-
-});
-
-
-/* =========================================
-   RIGHT ARM
-========================================= */
-
-gsap.to(".arm-right", {
-
-    rotation: -25,
-
-    duration: 1.8,
-
-    ease: "sine.inOut",
-
-    repeat: -1,
-
-    yoyo: true
-
-});
-
-
-/* =========================================
    TOOL MOVEMENT
 ========================================= */
 
@@ -366,7 +328,7 @@ gsap.to(".character-glow", {
 ========================================= */
 
 // December 3, 2026 at midnight
-const targetDate = new Date("December 3, 2026 00:00:00").getTime();
+const targetDate = new Date("December 30, 2026 00:00:00").getTime();
 
 
 function updateCountdown() {
